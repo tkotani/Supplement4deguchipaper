@@ -1,0 +1,43 @@
+Supplement to a paper
+------------
+Reliable theoretical calculations of energy bands 
+in the hybrid Quasiparticle self-consistent $GW$ method in the ecalj package
+Daiki Deguchi, Kazunori Sato, Takao Kotani, Hiori Kino
+------------
+
+Each directory contains input files, and energy band plot in QSGW.
+To see energy band, 
+>gnuplot -persist bnds.gnu
+at each directory.
+
+To reproduce the results from ctrls.* file (structure file. See our paper),
+we need to run QSGW calculation step by step.
+
+Steps are (in the case of gaas)
+1. Write ctrls.gaas by hand (or converted from VASP, cif or so. There are tools for it).
+2. Generate ctrl.gaas from ctrls.gaas by ctrlgenM1.py
+3. Generate GWinput by mkGWIN_lmf2
+(Finally, we need ctrl.gaas and GWinput. There two are only the requirement).
+4. Run QSGW (time consuming), by a script gwsc
+   >gwsc 5 -np 4 gaas
+   , where 5 means 5+1 iterations
+   (5 times is almost enough for semiconductors, but may need 15 times
+   iteration for NiO). Before gwsc, run
+   >lmfa gaas
+   to prepare atomic core electron density. (spherical atom calculations).
+
+   We finally get rst.gaas (electron density) and sigm.gass
+   (self-energy). Both are used for the postprocessing process such as
+   band plot
+5. With rst.gaas sigm.gaas, and ctrl.gaas, in addition to symmetry
+   line file syml.gaas (by hand; automated in future),
+   we can make band plot by
+   >job_band gaas  -np 4
+   (in LDA simg.gaas is not necessary).
+  
+Above description is just very minimum explanation taken from the ecalj manual.
+https://github.com/tkotani/ecalj/
+https://github.com/tkotani/ecalj/blob/master/Document/Manual/ecaljmanual.pdf
+
+========================================
+Quesitions to takaokotani@gmail.com
